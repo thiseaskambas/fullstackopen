@@ -12,20 +12,19 @@ const anecdotes = [
 
 const App = () => {
   const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState(new Array(anecdotes.length).fill(0));
 
-  const [points, setPoints] = useState([]);
   const voteHandler = () => {
     const newPoints = [...points];
-    newPoints[selected] === undefined
-      ? (newPoints[selected] = 1)
-      : (newPoints[selected] += 1);
+    newPoints[selected] += 1;
     setPoints(newPoints);
   };
+  const maxVote = points.indexOf(Math.max(...points));
   return (
     <>
       <div>{anecdotes[selected]}</div>
       <p>
-        This joke has {points[selected] === undefined ? "0" : points[selected]}
+        This joke has {points[selected]}
         points.
       </p>
       <button onClick={voteHandler}>vote</button>
@@ -36,6 +35,8 @@ const App = () => {
       >
         Next anecdote
       </button>
+      <h2>Anecdote with most votes</h2>
+      <div>{anecdotes[maxVote]}</div>
     </>
   );
 };
