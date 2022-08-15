@@ -6,31 +6,34 @@ const Button = ({ onClick, text }) => {
 
 const Display = ({ title, value }) => {
   return (
-    <p>
-      {title} {value}
-    </p>
+    <tr>
+      <td>{title}</td>
+      <td>{value}</td>
+    </tr>
   );
 };
 
 const Statistics = ({ totalScore, totalVotes, good, neutral, bad }) => {
   return (
-    <>
-      <Display title={"good"} value={good} />
-      <Display title={"neutral"} value={neutral} />
-      <Display title={"bad"} value={bad} />
-      <Display
-        title={"total votes"}
-        value={totalVotes > 0 ? totalVotes : "no votes"}
-      />
-      <Display
-        title={"average"}
-        value={totalVotes > 0 ? totalScore / totalVotes : "no votes"}
-      />
-      <Display
-        title={"positive"}
-        value={totalVotes > 0 ? `${(good / totalVotes) * 100}%` : "no votes"}
-      />
-    </>
+    <table>
+      <tbody>
+        <Display title={"good"} value={good} />
+        <Display title={"neutral"} value={neutral} />
+        <Display title={"bad"} value={bad} />
+        <Display
+          title={"total votes"}
+          value={totalVotes > 0 ? totalVotes : "no votes"}
+        />
+        <Display
+          title={"average"}
+          value={totalVotes > 0 ? totalScore / totalVotes : "no votes"}
+        />
+        <Display
+          title={"positive"}
+          value={totalVotes > 0 ? `${(good / totalVotes) * 100}%` : "no votes"}
+        />
+      </tbody>
+    </table>
   );
 };
 
