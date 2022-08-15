@@ -12,6 +12,25 @@ const Display = ({ title, value }) => {
   );
 };
 
+const Statistics = ({ totalScore, totalVotes, good }) => {
+  return (
+    <>
+      <Display
+        title={"total votes"}
+        value={totalVotes > 0 ? totalVotes : "no votes"}
+      />
+      <Display
+        title={"average"}
+        value={totalVotes > 0 ? totalScore / totalVotes : "no votes"}
+      />
+      <Display
+        title={"positive"}
+        value={totalVotes > 0 ? `${(good / totalVotes) * 100}%` : "no votes"}
+      />
+    </>
+  );
+};
+
 const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
@@ -27,18 +46,7 @@ const App = () => {
       <Display title={"good"} value={good} />
       <Display title={"neutral"} value={neutral} />
       <Display title={"bad"} value={bad} />
-      <Display
-        title={"total votes"}
-        value={totalVotes > 0 ? totalVotes : "no votes"}
-      />
-      <Display
-        title={"average"}
-        value={totalVotes > 0 ? totalScore / totalVotes : "no votes"}
-      />
-      <Display
-        title={"positive"}
-        value={totalVotes > 0 ? `${(good / totalVotes) * 100}%` : "no votes"}
-      />
+      <Statistics totalScore={totalScore} totalVotes={totalVotes} good={good} />
     </>
   );
 };
