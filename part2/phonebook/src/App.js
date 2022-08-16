@@ -5,8 +5,16 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const submitHandler = (e) => {
     e.preventDefault();
-    setPersons([...persons, { name: newName }]);
+    if (newName && !alreadyExists(newName)) {
+      setPersons([...persons, { name: newName }]);
+    } else {
+      return alert(`${newName} already exists!`);
+    }
     setNewName("");
+  };
+
+  const alreadyExists = (input) => {
+    return persons.find((person) => person.name === input);
   };
 
   return (
