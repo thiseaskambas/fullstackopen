@@ -1,6 +1,32 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const Weather = ({ lat, lon }) => {
+  const [data, setData] = useState("");
+  useEffect(() => {
+    axios
+      .get(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3e398fb373502081fc474681f340d786`
+      )
+      .then((res) => {
+        setData(res.data);
+        console.log(res.data);
+      });
+  }, [lat, lon]);
+  if (!data) return <div>Loading...</div>;
+  return (
+    <>
+      <p>temperature: {data.main.temp} Celcius</p>
+
+      <img
+        src={`http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
+        alt=""
+      />
+      <p>wind: {data.wind.speed} m/s</p>
+    </>
+  );
+};
+
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [query, setQuery] = useState("");
@@ -51,6 +77,12 @@ const App = () => {
                 ))}
               </ul>
               <img src={filtered[0].flags.png} alt="country flag"></img>
+              <h2>Weather in {filtered[0].name.common}</h2>
+              <Weather
+                key="weather"
+                lat={filtered[0].capitalInfo.latlng[0]}
+                lon={filtered[0].capitalInfo.latlng[1]}
+              />
             </>
           )}
         </>
