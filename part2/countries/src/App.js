@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+const api_key = process.env.REACT_APP_MAPS_API_KEY;
 
 const Weather = ({ lat, lon }) => {
   const [data, setData] = useState("");
   useEffect(() => {
     axios
       .get(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3e398fb373502081fc474681f340d786`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${api_key}`
       )
       .then((res) => {
         setData(res.data);
