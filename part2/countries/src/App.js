@@ -21,10 +21,7 @@ const App = () => {
     <>
       <div>
         Search :{" "}
-        <input
-          value={query}
-          onChange={(e) => setQuery((e) => e.target.value)}
-        />
+        <input value={query} onChange={(e) => setQuery(e.target.value)} />
       </div>
       <div>
         <p>Countries :</p>
