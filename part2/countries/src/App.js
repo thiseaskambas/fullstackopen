@@ -21,7 +21,10 @@ const App = () => {
     <>
       <div>
         Search :{" "}
-        <input value={query} onChange={(e) => setQuery(e.target.value)} />
+        <input
+          value={query}
+          onChange={(e) => setQuery((e) => e.target.value)}
+        />
       </div>
       <div>
         <p>Countries :</p>
@@ -32,7 +35,10 @@ const App = () => {
           {query && filtered.length < 10 && filtered.length > 1 && (
             <ul>
               {filtered.map((el) => (
-                <li key={el.cca3}>{el.name.common}</li>
+                <li key={el.cca3}>
+                  {el.name.common}{" "}
+                  <button onClick={() => setQuery(el.name.common)}>show</button>
+                </li>
               ))}
             </ul>
           )}
