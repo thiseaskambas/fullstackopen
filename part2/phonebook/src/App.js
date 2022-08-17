@@ -1,15 +1,58 @@
-import { useState } from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
+
+const Form = ({ onSubmit, newName, setNewName, newNumber, setNewNumber }) => {
+  return (
+    <form onSubmit={onSubmit}>
+      <div>
+        name:{" "}
+        <input value={newName} onChange={(e) => setNewName(e.target.value)} />
+      </div>
+      <div>
+        number:{" "}
+        <input
+          value={newNumber}
+          onChange={(e) => setNewNumber(e.target.value)}
+        />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  );
+};
+
+const Filter = ({ state, setState }) => {
+  return (
+    <div>
+      filter names :{" "}
+      <input value={state} onChange={(e) => setState(e.target.value)} />
+    </div>
+  );
+};
+
+const Persons = ({ arr }) => {
+  return arr.map((el) => (
+    <p key={el.id}>
+      {el.name} - {el.number}
+    </p>
+  ));
+};
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then((res) => {
+        setPersons(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const checkIfUnique = (field, query) => {
     return persons.find((person) => person[field] === query);
@@ -37,59 +80,24 @@ const App = () => {
     setNewNumber("");
   };
 
-  const Form = ({ onSubmit }) => {
-    return (
-      <form onSubmit={onSubmit}>
-        <div>
-          name:{" "}
-          <input value={newName} onChange={(e) => setNewName(e.target.value)} />
-        </div>
-        <div>
-          number:{" "}
-          <input
-            value={newNumber}
-            onChange={(e) => setNewNumber(e.target.value)}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-    );
-  };
-
   const filtered = persons.filter((el) =>
     el.name.toLocaleLowerCase().startsWith(searchQuery.toLocaleLowerCase())
   );
 
-  const Filter = () => {
-    return (
-      <div>
-        filter names :{" "}
-        <input
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
-    );
-  };
-
-  const Persons = () => {
-    return filtered.map((el) => (
-      <p key={el.id}>
-        {el.name} - {el.number}
-      </p>
-    ));
-  };
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter />
+      <Filter state={searchQuery} setState={setSearchQuery} />
       <h2>Add new number</h2>
-      <Form onSubmit={submitHandler} />
+      <Form
+        onSubmit={submitHandler}
+        newName={newName}
+        setNewName={setNewName}
+        newNumber={newNumber}
+        setNewNumber={setNewNumber}
+      />
       <h2>Numbers</h2>
-      <Persons />
+      <Persons arr={filtered} />
     </div>
   );
 };
