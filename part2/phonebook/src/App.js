@@ -59,6 +59,7 @@ const App = () => {
         .addNewContact({ name: newName, number: newNumber })
         .then((data) => setPersons((prev) => [...prev, data]))
         .catch((err) => console.log(err));
+    } else if (nameAlreadyExists) {
     }
     setNewName("test");
     setNewNumber("test");
@@ -72,12 +73,15 @@ const App = () => {
         );
 
   const deleteHandler = (id) => {
-    phonebookServices.deleteContact(id).then((res) => {
-      phonebookServices
-        .getAll()
-        .then((data) => setPersons(data))
-        .catch((err) => console.log(err));
-    });
+    if (window.confirm("Are you sure you want to delete this contact?")) {
+      phonebookServices.deleteContact(id).then((res) => {
+        // phonebookServices
+        //   .getAll()
+        //   .then((data) => setPersons(data))
+        //   .catch((err) => console.log(err));
+        setPersons(persons.filter((el) => el.id !== id)); //avoid making server calls
+      });
+    }
   };
 
   return (
