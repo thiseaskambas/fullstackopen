@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Form from "./components/Form";
 import phonebookServices from "./services/phonebook";
 
@@ -32,8 +32,8 @@ const Person = ({ person, handleDelete }) => {
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("test");
-  const [newNumber, setNewNumber] = useState("test");
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -60,9 +60,23 @@ const App = () => {
         .then((data) => setPersons((prev) => [...prev, data]))
         .catch((err) => console.log(err));
     } else if (nameAlreadyExists) {
+      if (
+        window.confirm(
+          `${nameAlreadyExists.name} already exists. Do you want to update the number?`
+        )
+      ) {
+        const updatedContact = { ...nameAlreadyExists, number: newNumber };
+        phonebookServices.updateContact(updatedContact).then((res) => {
+          setPersons(
+            persons.map((el) =>
+              el.id !== updatedContact.id ? el : updatedContact
+            )
+          );
+        });
+      }
     }
-    setNewName("test");
-    setNewNumber("test");
+    setNewName("");
+    setNewNumber("");
   };
 
   const filtered =
@@ -72,14 +86,14 @@ const App = () => {
           el.name.toLowerCase().startsWith(searchQuery.toLowerCase())
         );
 
-  const deleteHandler = (id) => {
-    if (window.confirm("Are you sure you want to delete this contact?")) {
-      phonebookServices.deleteContact(id).then((res) => {
+  const deleteHandler = (person) => {
+    if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
+      phonebookServices.deleteContact(person.id).then((res) => {
         // phonebookServices
         //   .getAll()
         //   .then((data) => setPersons(data))
         //   .catch((err) => console.log(err));
-        setPersons(persons.filter((el) => el.id !== id)); //avoid making server calls
+        setPersons(persons.filter((el) => el.id !== person.id)); //avoid making server calls
       });
     }
   };
@@ -102,7 +116,7 @@ const App = () => {
         <Person
           key={el.id}
           person={el}
-          handleDelete={() => deleteHandler(el.id)}
+          handleDelete={() => deleteHandler(el)}
         />
       ))}
     </div>
