@@ -1,9 +1,9 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Form from "./components/Form";
 import phonebookServices from "./services/phonebook";
 
 const Filter = ({ state, setState }) => {
+  console.log("filter");
   return (
     <div>
       filter names :{" "}
@@ -12,18 +12,28 @@ const Filter = ({ state, setState }) => {
   );
 };
 
-const Persons = ({ arr }) => {
-  return arr.map((el) => (
-    <p key={el.id}>
-      {el.name} - {el.number}
-    </p>
-  ));
+// const Persons = ({ arr, deleteHandler }) => {
+//   return arr.map((el) => (
+//     <div key={el.id}>
+//       {el.name} - {el.number}{" "}
+//       <button onClick={() => deleteHandler(el.id)}>delete</button>
+//     </div>
+//   ));
+// };
+
+const Person = ({ person, handleDelete }) => {
+  return (
+    <div>
+      {person.name} - {person.number}{" "}
+      <button onClick={handleDelete}>delete</button>
+    </div>
+  );
 };
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
+  const [newName, setNewName] = useState("test");
+  const [newNumber, setNewNumber] = useState("test");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -39,23 +49,36 @@ const App = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    console.log("submiting");
     const nameAlreadyExists = checkIfUnique("name", newName);
     const numberAlreadyExists = checkIfUnique("number", newNumber);
     if (!newName || !newNumber) {
-      alert("Fill in the name AND the number please");
+      return alert("Fill in the name AND the number please");
     } else if (!nameAlreadyExists && !numberAlreadyExists) {
       phonebookServices
         .addNewContact({ name: newName, number: newNumber })
         .then((data) => setPersons((prev) => [...prev, data]))
         .catch((err) => console.log(err));
     }
-    setNewName("");
-    setNewNumber("");
+    setNewName("test");
+    setNewNumber("test");
   };
 
-  const filtered = persons.filter((el) =>
-    el.name.toLocaleLowerCase().startsWith(searchQuery.toLocaleLowerCase())
-  );
+  const filtered =
+    searchQuery.length > 0
+      ? persons
+      : persons.filter((el) =>
+          el.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+        );
+
+  const deleteHandler = (id) => {
+    phonebookServices.deleteContact(id).then((res) => {
+      phonebookServices
+        .getAll()
+        .then((data) => setPersons(data))
+        .catch((err) => console.log(err));
+    });
+  };
 
   return (
     <div>
@@ -70,7 +93,14 @@ const App = () => {
         setNewNumber={setNewNumber}
       />
       <h2>Numbers</h2>
-      <Persons arr={filtered} />
+      {/* <Persons arr={filtered} deleteHandler={deleteHandler} /> */}
+      {filtered.map((el) => (
+        <Person
+          key={el.id}
+          person={el}
+          handleDelete={() => deleteHandler(el.id)}
+        />
+      ))}
     </div>
   );
 };

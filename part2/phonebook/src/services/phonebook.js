@@ -10,4 +10,8 @@ const getAll = () => {
   return axios.get(baseUrl).then((res) => res.data);
 };
 
-export default { addNewContact, getAll };
+const deleteContact = (id) => {
+  return axios.delete(`${baseUrl}/${id}`);
+};
+
+export default { addNewContact, getAll, deleteContact };
