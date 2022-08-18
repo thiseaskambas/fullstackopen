@@ -1,26 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-
-const Form = ({ onSubmit, newName, setNewName, newNumber, setNewNumber }) => {
-  return (
-    <form onSubmit={onSubmit}>
-      <div>
-        name:{" "}
-        <input value={newName} onChange={(e) => setNewName(e.target.value)} />
-      </div>
-      <div>
-        number:{" "}
-        <input
-          value={newNumber}
-          onChange={(e) => setNewNumber(e.target.value)}
-        />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  );
-};
+import Form from "./components/Form";
+import phonebookServices from "./services/phonebook";
 
 const Filter = ({ state, setState }) => {
   return (
@@ -46,11 +27,9 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((res) => {
-        setPersons(res.data);
-      })
+    phonebookServices
+      .getAll()
+      .then((data) => setPersons(data))
       .catch((err) => console.log(err));
   }, []);
 
@@ -62,19 +41,13 @@ const App = () => {
     e.preventDefault();
     const nameAlreadyExists = checkIfUnique("name", newName);
     const numberAlreadyExists = checkIfUnique("number", newNumber);
-    // console.log({ nameAlreadyExists, numberAlreadyExists });
-    if (newName && newNumber && !nameAlreadyExists && !numberAlreadyExists) {
-      setPersons([
-        ...persons,
-        { name: newName, number: newNumber, id: persons.length + 1 },
-      ]);
-    } else {
-      return alert(
-        `${
-          (nameAlreadyExists && nameAlreadyExists.name) ||
-          numberAlreadyExists.number
-        } already exists!`
-      );
+    if (!newName || !newNumber) {
+      alert("Fill in the name AND the number please");
+    } else if (!nameAlreadyExists && !numberAlreadyExists) {
+      phonebookServices
+        .addNewContact({ name: newName, number: newNumber })
+        .then((data) => setPersons((prev) => [...prev, data]))
+        .catch((err) => console.log(err));
     }
     setNewName("");
     setNewNumber("");
