@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Form from "./components/Form";
 import phonebookServices from "./services/phonebook";
+import Notification from "./components/Notification";
 
 const Filter = ({ state, setState }) => {
   console.log("filter");
@@ -35,6 +36,10 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [notification, setNotification] = useState({
+    type: null,
+    message: null,
+  });
 
   useEffect(() => {
     phonebookServices
@@ -58,7 +63,19 @@ const App = () => {
       phonebookServices
         .addNewContact({ name: newName, number: newNumber })
         .then((data) => setPersons((prev) => [...prev, data]))
-        .catch((err) => console.log(err));
+        .then(() => {
+          setNotification({
+            type: "success",
+            text: `Successfully added to phonebook`,
+          });
+          setTimeout(() => {
+            setNotification({
+              type: null,
+              message: null,
+            });
+          }, 15000);
+        })
+        .catch((err) => console.log(err.message));
     } else if (nameAlreadyExists) {
       if (
         window.confirm(
@@ -88,18 +105,30 @@ const App = () => {
 
   const deleteHandler = (person) => {
     if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
-      phonebookServices.deleteContact(person.id).then((res) => {
-        // phonebookServices
-        //   .getAll()
-        //   .then((data) => setPersons(data))
-        //   .catch((err) => console.log(err));
-        setPersons(persons.filter((el) => el.id !== person.id)); //avoid making server calls
-      });
+      phonebookServices
+        .deleteContact(person.id)
+        .then((res) => {
+          // phonebookServices
+          //   .getAll()
+          //   .then((data) => setPersons(data))
+          //   .catch((err) => console.log(err));
+          setPersons(persons.filter((el) => el.id !== person.id)); //avoid making server calls
+        })
+        .catch((err) => {
+          setNotification({ type: "error", text: `${err.message}` });
+          setTimeout(() => {
+            setNotification({
+              type: null,
+              message: null,
+            });
+          }, 15000);
+        });
     }
   };
 
   return (
     <div>
+      <Notification message={notification} />
       <h2>Phonebook</h2>
       <Filter state={searchQuery} setState={setSearchQuery} />
       <h2>Add new number</h2>
