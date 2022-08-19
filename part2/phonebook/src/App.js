@@ -97,7 +97,7 @@ const App = () => {
   };
 
   const filtered =
-    searchQuery.length > 0
+    searchQuery.length === 0
       ? persons
       : persons.filter((el) =>
           el.name.toLowerCase().startsWith(searchQuery.toLowerCase())
