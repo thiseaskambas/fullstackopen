@@ -54,7 +54,7 @@ const App = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("submiting");
+
     const nameAlreadyExists = checkIfUnique("name", newName);
     const numberAlreadyExists = checkIfUnique("number", newNumber);
     if (!newName || !newNumber) {
@@ -75,7 +75,18 @@ const App = () => {
             });
           }, 15000);
         })
-        .catch((err) => console.log(err.message));
+        .catch((err) => {
+          setNotification({
+            type: "error",
+            text: err.response.data.error,
+          });
+          setTimeout(() => {
+            setNotification({
+              type: null,
+              message: null,
+            });
+          }, 15000);
+        });
     } else if (nameAlreadyExists) {
       if (
         window.confirm(
@@ -128,6 +139,7 @@ const App = () => {
 
   return (
     <div>
+      <p>DEV</p>
       <Notification message={notification} />
       <h2>Phonebook</h2>
       <Filter state={searchQuery} setState={setSearchQuery} />
