@@ -79,6 +79,13 @@ const App = () => {
     }, 5000);
   };
 
+  const handleDelete = async (blog) => {
+    if (window.confirm(`Are you sure you want to delete ${blog.title}?`)) {
+      await blogService.deleteBlog(blog.id);
+      setBlogs(blogs.filter((el) => el.id !== blog.id));
+    }
+  };
+
   return (
     <div>
       {notification && <Notification notification={notification} />}
@@ -98,7 +105,14 @@ const App = () => {
       {user &&
         blogs
           .sort((a, b) => b.likes - a.likes)
-          .map((blog) => <Blog key={blog.id} blog={blog} user={user} />)}
+          .map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              user={user}
+              handleDelete={handleDelete}
+            />
+          ))}
       {user && (
         <Togglable label="Add new blog">
           <NewBlogForm saveBlog={saveBlog} />
