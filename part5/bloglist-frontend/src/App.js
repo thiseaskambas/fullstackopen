@@ -2,15 +2,13 @@ import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import Notification from "./components/Notification";
+import LoginForm from "./components/LoginForm";
+import NewBlogForm from "./components/NewBlogForm";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogUrl, setBlogUrl] = useState("");
-  const [blogAuthor, setBlogAuthor] = useState("");
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
@@ -26,6 +24,7 @@ const App = () => {
     const fetchedBlogs = await blogService.getAll();
     setBlogs(fetchedBlogs);
   };
+
   useEffect(() => {
     if (user) {
       try {
@@ -36,18 +35,16 @@ const App = () => {
     }
   }, [user]);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (userToSave) => {
     try {
-      const loggedUser = await blogService.logIn({ username, password });
+      const loggedUser = await blogService.logIn(userToSave);
       window.localStorage.setItem(
         "loggedBlogappUser",
         JSON.stringify(loggedUser)
       );
       blogService.setToken(loggedUser.token);
       setUser(loggedUser);
-      setPassword("");
-      setUsername("");
+
       setNotification({ message: "Logged In", type: "success" });
       setTimeout(() => {
         setNotification(null);
@@ -70,20 +67,11 @@ const App = () => {
     }, 5000);
   };
 
-  const handleAddBlog = async (e) => {
-    e.preventDefault();
-    const newBlog = await blogService.createBlog({
-      title: blogTitle,
-      url: blogUrl,
-      author: blogAuthor,
-    });
-    console.log(newBlog);
-    setBlogs([...blogs, newBlog]);
-    setBlogTitle("");
-    setBlogUrl("");
-    setBlogAuthor("");
+  const saveBlog = async (blogToSave) => {
+    const saved = await blogService.createBlog(blogToSave);
+    setBlogs([...blogs, saved]);
     setNotification({
-      message: `A new Blog "${blogTitle}" was added`,
+      message: `A new Blog "${saved.title}" was added`,
       type: "success",
     });
     setTimeout(() => {
@@ -96,64 +84,25 @@ const App = () => {
       {notification && <Notification notification={notification} />}
       <h1>blogs</h1>
       {!user && (
-        <form onSubmit={handleLogin}>
-          <div>
-            username:{" "}
-            <input
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
-            />
-          </div>
-          <div>
-            password:{" "}
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div>
-            <button>login</button>
-          </div>
-        </form>
+        <Togglable label="Log-in">
+          <LoginForm handleLogin={handleLogin} />
+        </Togglable>
       )}
-      {}
+
       {user && (
         <>
           <h3>{user.name.toUpperCase()} is logged in</h3>
           <button onClick={handleLogout}>logout</button>
         </>
       )}
-      {user && blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+      {user &&
+        blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map((blog) => <Blog key={blog.id} blog={blog} user={user} />)}
       {user && (
-        <form onSubmit={handleAddBlog}>
-          <div>
-            title :{" "}
-            <input
-              value={blogTitle}
-              onChange={(e) => setBlogTitle(e.target.value)}
-            />
-          </div>
-          <div>
-            URL :{" "}
-            <input
-              value={blogUrl}
-              onChange={(e) => setBlogUrl(e.target.value)}
-            />
-          </div>
-          <div>
-            Author :{" "}
-            <input
-              value={blogAuthor}
-              onChange={(e) => setBlogAuthor(e.target.value)}
-            />
-          </div>
-          <div>
-            <button>Submit</button>
-          </div>
-        </form>
+        <Togglable label="Add new blog">
+          <NewBlogForm saveBlog={saveBlog} />
+        </Togglable>
       )}
     </div>
   );
