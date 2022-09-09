@@ -17,11 +17,11 @@ const Blog = ({ blog, user, handleDelete }) => {
 
   return (
     <div className="blog-box">
-      Title : {blog.title}{" "}
+      <div>Title : {blog.title} </div>
+      <div>Author : {blog.author}</div>
       <button onClick={() => setVisible((prev) => !prev)}>{label}</button>
       {visible && (
         <>
-          <div>Author : {blog.author}</div>
           <div>UserName: {blog.user.name.toUpperCase()}</div>
           <div>
             Likes {likes} <button onClick={handleLike}>like</button>
