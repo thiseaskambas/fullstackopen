@@ -3,6 +3,7 @@ import "@testing-library/jest-dom/extend-expect";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Blog from "./Blog";
+import NewBlogForm from "./NewBlogForm";
 
 test("renders content", () => {
   const blog = {
@@ -74,3 +75,22 @@ test("displays details after clicking", async () => {
 //   await feUser.click(likeBtn);
 //   expect(mockHandler.mock.calls).toHaveLength(2);
 // });
+
+test("the event handler runs with right inputs when a new blog is created", async () => {
+  const mockHandler = jest.fn();
+  const feUser = userEvent.setup();
+  const { container } = render(<NewBlogForm saveBlog={mockHandler} />);
+  const saveBtn = container.querySelector(".submitBtn");
+  const titleInput = container.querySelector("#blog-title");
+  const urlInput = container.querySelector("#blog-url");
+  const authorInput = container.querySelector("#blog-author");
+  await feUser.type(titleInput, "test title");
+  await feUser.type(urlInput, "test url");
+  await feUser.type(authorInput, "test author");
+  await feUser.click(saveBtn);
+  expect(mockHandler.mock.calls).toHaveLength(1);
+  console.log(mockHandler.mock.calls);
+  expect(mockHandler.mock.calls[0][0].title).toBe("test title");
+  expect(mockHandler.mock.calls[0][0].url).toBe("test url");
+  expect(mockHandler.mock.calls[0][0].author).toBe("test author");
+});
