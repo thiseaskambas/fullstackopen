@@ -1,6 +1,7 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Blog from "./Blog";
 
 test("renders content", () => {
@@ -22,4 +23,28 @@ test("renders content", () => {
   expect(author).toBeDefined();
   expect(username).toBeNull();
   expect(likes).toBeNull();
+});
+
+test("displays details after clicking", async () => {
+  const blog = {
+    title: "some title",
+    author: "some author",
+    user: { name: "some username", id: "testId" },
+    likes: 999,
+  };
+
+  const user = {
+    id: "testId",
+  };
+
+  render(<Blog blog={blog} user={user} />);
+  const button = screen.getByText("show");
+  const feUser = userEvent.setup();
+  await feUser.click(button);
+  const username = screen.queryByText("some username");
+  const likes = screen.queryByText("999");
+  const deleteBtn = screen.queryByText("Delete");
+  expect(username).toBeDefined();
+  expect(likes).toBeDefined();
+  expect(deleteBtn).toBeDefined();
 });
