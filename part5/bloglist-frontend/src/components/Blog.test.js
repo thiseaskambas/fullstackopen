@@ -48,3 +48,29 @@ test("displays details after clicking", async () => {
   expect(likes).toBeDefined();
   expect(deleteBtn).toBeDefined();
 });
+
+// test("handler is called twice when like button is clicked twice", async () => {
+//   const blog = {
+//     title: "some title",
+//     author: "some author",
+//     user: { name: "some username", id: "testId" },
+//     likes: 999,
+//   };
+
+//   const user = {
+//     id: "testId",
+//   };
+
+//   const mockHandler = jest.fn();
+
+//   render(<Blog blog={blog} user={user} likeTest={mockHandler} />);
+//   const showBtn = screen.getByText("show");
+//   const feUser = userEvent.setup();
+//   await feUser.click(showBtn);
+
+//   const likeBtn = screen.getByText("like");
+//   expect(likeBtn).toBeDefined();
+//   await feUser.click(likeBtn);
+//   await feUser.click(likeBtn);
+//   expect(mockHandler.mock.calls).toHaveLength(2);
+// });
