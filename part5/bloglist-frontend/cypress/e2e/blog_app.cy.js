@@ -79,7 +79,8 @@ describe('Blog app', function () {
       it('and are ordered based on likes', function () {
         cy.contains('third blog').parent().contains('show').click();
         cy.contains('like').click();
-        cy.get('.blog-box').eq(0).should('contain', 'first blog');
+        cy.visit('http://localhost:3000');
+        cy.get('.blog-box').eq(0).should('contain', 'third blog');
       });
     });
   });
