@@ -14,7 +14,7 @@ const setToken = (newToken) => {
 
 const getAll = () => {
   const config = {
-    headers: { Authorization: token },
+    headers: { authorization: token },
   };
   const request = axios.get(baseUrl, config);
   return request.then((response) => response.data);
@@ -22,7 +22,7 @@ const getAll = () => {
 
 const createBlog = async (data) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { authorization: token },
   };
   const res = await axios.post(baseUrl, data, config);
   return res.data;
@@ -30,7 +30,7 @@ const createBlog = async (data) => {
 
 const like = async (blogId, likes) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { authorization: token },
   };
   const res = await axios.put(`${baseUrl}/${blogId}`, { likes: likes }, config);
   return res.data;
@@ -38,7 +38,7 @@ const like = async (blogId, likes) => {
 
 const deleteBlog = async (blogId) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { uthorization: token },
   };
   await axios.delete(`${baseUrl}/${blogId}`, config);
 };

@@ -114,7 +114,7 @@ const App = () => {
             />
           ))}
       {user && (
-        <Togglable label="Add new blog">
+        <Togglable label="Add new blog" id="new-blog-btn">
           <NewBlogForm saveBlog={saveBlog} />
         </Togglable>
       )}

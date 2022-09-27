@@ -34,4 +34,48 @@ describe("Blog app", function () {
       cy.contains("USER ONE is logged in");
     });
   });
+  describe("When logged in", function () {
+    beforeEach(function () {
+      cy.login({ username: "user1", password: "test" });
+    });
+
+    it("A blog can be created", function () {
+      cy.contains("Add new blog").click();
+      cy.get("#blog-title").type("title1");
+      cy.get("#blog-url").type("url1");
+      cy.get("#blog-author").type("author1");
+      cy.get(".submitBtn").click();
+      cy.contains("title1");
+    });
+
+    describe("and several blogEntries can be created", function () {
+      beforeEach(function () {
+        cy.addBlog({
+          title: "first blog",
+          url: "some url",
+          author: "some author",
+        });
+        cy.addBlog({
+          title: "second blog",
+          url: "some url",
+          author: "some author",
+        });
+        cy.addBlog({
+          title: "third blog",
+          url: "some url",
+          author: "some author",
+        });
+      });
+      it("and one of these can be liked", function () {
+        cy.contains("first blog");
+        cy.contains("third blog").parent().contains("show").click();
+        cy.contains("like").click();
+        cy.contains("1");
+      });
+      it("and one of these can be deleted", function () {
+        cy.contains("first blog").parent().contains("show").click();
+        cy.contains("Delete");
+      });
+    });
+  });
 });

@@ -6,7 +6,7 @@ const Togglable = (props) => {
   const displayWhenHidden = { display: visible ? "none" : true };
   return (
     <>
-      <div style={displayWhenHidden}>
+      <div id={props.id} style={displayWhenHidden}>
         <button onClick={() => setVisible(true)}>{props.label}</button>
       </div>
       <div style={displayWhenVisible}>
