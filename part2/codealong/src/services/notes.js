@@ -1,5 +1,11 @@
-import axios from "axios";
-const baseUrl = "http://localhost:3001/api/notes";
+import axios from 'axios';
+const baseUrl = 'http://localhost:3001/api/notes';
+
+let token = null;
+
+const setToken = (newToken) => {
+  token = `bearer ${newToken}`;
+};
 
 const getAll = () => {
   //return axios.get(baseUrl)
@@ -12,7 +18,10 @@ const getAll = () => {
 };
 
 const create = (newObject) => {
-  const request = axios.post(baseUrl, newObject);
+  const config = {
+    headers: { authorization: token },
+  };
+  const request = axios.post(baseUrl, newObject, config);
   return request.then((response) => response.data);
 };
 
@@ -25,4 +34,5 @@ export default {
   getAll,
   create,
   update,
+  setToken,
 };
