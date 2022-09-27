@@ -1,0 +1,21 @@
+.error{
+   color: red;
+   background-color: darkgray;
+   border: 2px solid;
+   border-radius: 0.5rem;
+   padding: 1rem;
+}
+
+.success{
+   color: green;
+   background-color: darkgray;
+   border: 2px solid;
+   border-radius: 0.5rem;
+   padding: 1rem;
+}
+
+.blog-box{
+   border: 2px solid darkblue;
+   margin: 0.5rem;
+   padding: 0.5rem;
+}
