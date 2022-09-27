@@ -1,8 +1,8 @@
-import axios from "axios";
-const baseUrl = "/api/blogs";
+import axios from 'axios';
+const baseUrl = '/api/blogs';
 
 const logIn = async (credentials) => {
-  const res = await axios.post("/api/login", credentials);
+  const res = await axios.post('/api/login', credentials);
   return res.data;
 };
 
@@ -38,7 +38,7 @@ const like = async (blogId, likes) => {
 
 const deleteBlog = async (blogId) => {
   const config = {
-    headers: { uthorization: token },
+    headers: { authorization: token },
   };
   await axios.delete(`${baseUrl}/${blogId}`, config);
 };
