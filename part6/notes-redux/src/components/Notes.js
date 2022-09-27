@@ -20,7 +20,7 @@ const Notes = () => {
       ? notes.notes.filter((note) => note.important)
       : notes.notes.filter((note) => !note.important);
   });
-  console.log({ notes });
+
   return (
     <ul>
       {notes.map((note) => (

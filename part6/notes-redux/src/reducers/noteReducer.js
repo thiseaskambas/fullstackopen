@@ -1,3 +1,5 @@
+import { createSlice } from "@reduxjs/toolkit";
+
 const initialState = {
   notes: [
     {
@@ -14,41 +16,34 @@ const initialState = {
   filter: "IMPORTANT",
 };
 
-const noteReducer = (state = initialState, action) => {
-  if (action.type === "NEW_NOTE") {
-    return { ...state, notes: [...state.notes, action.data] };
-  } else if (action.type === "TOGGLE_IMPORTANCE") {
-    return {
-      ...state,
-      notes: state.notes.map((note) =>
-        note.id === action.data.id
-          ? { ...note, important: !note.important }
-          : note
-      ),
-    };
-  }
-
-  return state;
-};
-
 const generateId = () => Number((Math.random() * 1000000).toFixed(0));
 
-export const createNote = (content) => {
-  return {
-    type: "NEW_NOTE",
-    data: {
-      content,
-      important: false,
-      id: generateId(),
+const noteSlice = createSlice({
+  name: "notes",
+  initialState,
+  reducers: {
+    createNote(state, action) {
+      const content = action.payload;
+      state.notes.push({
+        content,
+        important: false,
+        id: generateId(),
+      });
     },
-  };
-};
+    toggleImportanceOf(state, action) {
+      const id = action.payload;
+      const noteToChange = state.notes.find((n) => n.id === id);
+      const changedNote = {
+        ...noteToChange,
+        important: !noteToChange.important,
+      };
+      return {
+        ...state,
+        notes: state.notes.map((note) => (note.id !== id ? note : changedNote)),
+      };
+    },
+  },
+});
 
-export const toggleImportanceOf = (id) => {
-  return {
-    type: "TOGGLE_IMPORTANCE",
-    data: { id },
-  };
-};
-
-export default noteReducer;
+export const { createNote, toggleImportanceOf } = noteSlice.actions;
+export default noteSlice.reducer;
