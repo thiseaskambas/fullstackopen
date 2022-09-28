@@ -14,7 +14,7 @@ const Anecdote = ({ anecdote, clickHandler }) => {
 };
 
 const Anecdotes = () => {
-  const anecdotes = useSelector((state) => state);
+  const anecdotes = useSelector((state) => state.anecdotes);
   const dispatch = useDispatch();
 
   return (
