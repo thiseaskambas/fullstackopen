@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 
 import App from "./App";
 import noteReducer from "./reducers/noteReducer";
-
 import filterReducer from "./reducers/filterReducer";
 
 const store = configureStore({

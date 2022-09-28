@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-import { vote } from "../reducers/anecdoteReducer";
-import { setNotification } from "../reducers/notificationReducer";
+import { saveVote } from "../reducers/anecdoteReducer";
+import { setAsyncNotification } from "../reducers/notificationReducer";
 import { selectFilter } from "../reducers/filterReducer";
 
 const Anecdote = ({ anecdote, clickHandler }) => {
@@ -8,7 +8,7 @@ const Anecdote = ({ anecdote, clickHandler }) => {
     <div>
       <div>{anecdote.content}</div>
       <div>
-        has {anecdote.votes}
+        {anecdote.votes} votes
         <button onClick={clickHandler}>vote</button>
       </div>
     </div>
@@ -24,12 +24,14 @@ const Anecdotes = () => {
   );
 
   const dispatch = useDispatch();
-  const voteHandler = (id) => {
-    dispatch(vote(id));
-    dispatch(setNotification("voted!"));
-    setTimeout(() => {
-      dispatch(setNotification(null));
-    }, 5000);
+  const voteHandler = (anecdote) => {
+    dispatch(saveVote(anecdote));
+    dispatch(
+      setAsyncNotification({
+        message: `voted ${anecdote.content.slice(0, 15)}...`,
+        time: 5,
+      })
+    );
   };
 
   return (
@@ -37,7 +39,7 @@ const Anecdotes = () => {
       {anecdotesToShow.map((anecdote) => (
         <Anecdote
           anecdote={anecdote}
-          clickHandler={() => voteHandler(anecdote.id)}
+          clickHandler={() => voteHandler(anecdote)}
           key={anecdote.id}
         />
       ))}

@@ -1,49 +1,55 @@
-const anecdotesAtStart = [
-  "If it hurts, do it more often",
-  "Adding manpower to a late software project makes it later!",
-  "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-  "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-  "Premature optimization is the root of all evil.",
-  "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
-];
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import anecdotes from "../services/anecdotes";
 
-const getId = () => (100000 * Math.random()).toFixed(0);
-
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0,
-  };
-};
-
-const initialState = anecdotesAtStart.map(asObject);
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case "VOTE":
-      return state.map((el) =>
-        el.id === action.data.id ? { ...el, votes: el.votes + 1 } : el
-      );
-    case "ADD":
-      return [...state, asObject(action.data.anecdote)];
-    default:
-      return state;
+export const initializeAnecdotes = createAsyncThunk(
+  "anecdotes/fetchData",
+  async () => {
+    const data = await anecdotes.getAll();
+    return data;
   }
-};
+);
 
-export const vote = (id) => {
-  return {
-    type: "VOTE",
-    data: { id },
-  };
-};
+export const createAnecdote = createAsyncThunk(
+  "anecdotes/createAnecdote",
+  async (entry) => {
+    const data = await anecdotes.createNew(entry);
+    return data;
+  }
+);
 
-export const addAnecdote = (anecdote) => {
-  return {
-    type: "ADD",
-    data: { anecdote },
-  };
-};
+export const saveVote = createAsyncThunk("anecdotes/vote", async (anecdote) => {
+  const response = await anecdotes.voteAnecdote(anecdote);
+  return response;
+});
 
-export default reducer;
+export const anecdoteSlice = createSlice({
+  name: "anecdote",
+  initialState: [],
+  reducers: {
+    vote: (state, action) => {
+      return state.map((el) =>
+        el.id === action.payload ? { ...el, votes: el.votes + 1 } : el
+      );
+    },
+    addAnecdote: (state, action) => {
+      state.push(action.payload);
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(initializeAnecdotes.fulfilled, (state, action) => {
+        return action.payload;
+      })
+      .addCase(createAnecdote.fulfilled, (state, action) => {
+        state.push(action.payload);
+      })
+      .addCase(saveVote.fulfilled, (state, action) => {
+        return state.map((el) =>
+          el.id === action.payload.id ? { ...el, votes: el.votes + 1 } : el
+        );
+      });
+  },
+});
+
+export const { addAnecdote } = anecdoteSlice.actions;
+export default anecdoteSlice.reducer;

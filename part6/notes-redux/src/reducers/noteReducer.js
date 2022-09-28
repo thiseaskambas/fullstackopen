@@ -1,49 +1,44 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import noteService from "../services/notes";
 
-const initialState = {
-  notes: [
-    {
-      content: "reducer defines how redux store works",
-      important: true,
-      id: 1,
-    },
-    {
-      content: "state of store can contain any data",
-      important: false,
-      id: 2,
-    },
-  ],
-  filter: "IMPORTANT",
-};
-
-const generateId = () => Number((Math.random() * 1000000).toFixed(0));
+export const initializeNotes = createAsyncThunk(
+  "notes/fetchNotes",
+  async () => {
+    const data = await noteService.getAll();
+    return data;
+  }
+);
 
 const noteSlice = createSlice({
   name: "notes",
-  initialState,
+  initialState: [],
   reducers: {
-    createNote(state, action) {
-      const content = action.payload;
-      state.notes.push({
-        content,
-        important: false,
-        id: generateId(),
-      });
-    },
     toggleImportanceOf(state, action) {
       const id = action.payload;
-      const noteToChange = state.notes.find((n) => n.id === id);
+      const noteToChange = state.find((n) => n.id === id);
       const changedNote = {
         ...noteToChange,
         important: !noteToChange.important,
       };
-      return {
-        ...state,
-        notes: state.notes.map((note) => (note.id !== id ? note : changedNote)),
-      };
+      return state.map((note) => (note.id !== id ? note : changedNote));
     },
+    appendNote(state, action) {
+      state.push(action.payload);
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(initializeNotes.fulfilled, (state, action) => {
+      return action.payload;
+    });
   },
 });
 
-export const { createNote, toggleImportanceOf } = noteSlice.actions;
+//MANUAL THUNK (STILL USES REDUX THUNK LIBRARY)
+export const createNote = (content) => {
+  return async (dispatch) => {
+    const newNote = await noteService.createNew(content);
+    dispatch(appendNote(newNote));
+  };
+};
+export const { toggleImportanceOf, appendNote } = noteSlice.actions;
 export default noteSlice.reducer;
