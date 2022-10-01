@@ -1,10 +1,11 @@
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { createAnecdote } from "../reducers/anecdoteReducer";
 import { setNotification } from "../reducers/notificationReducer";
-import appServices from "../services/anecdotes";
 
 const Form = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const addNewAnecdote = async (e) => {
     e.preventDefault();
@@ -18,6 +19,7 @@ const Form = () => {
     setTimeout(() => {
       dispatch(setNotification(null));
     }, 5000);
+    navigate("/");
   };
 
   return (
