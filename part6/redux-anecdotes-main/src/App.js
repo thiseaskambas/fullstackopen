@@ -1,16 +1,20 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectNotification } from "./reducers/notificationReducer";
-import Anecdotes from "./components/Anecdotes";
-import Form from "./components/Form";
+
 import Notification from "./components/Notification";
-import Filter from "./components/Filter";
 
 import { initializeAnecdotes } from "./reducers/anecdoteReducer";
 
+import Navbar from "./components/Navbar";
+import { Routes, Route } from "react-router-dom";
+import Anecdotes from "./components/Anecdotes";
+import Form from "./components/Form";
+import About from "./components/About";
+import SingleView from "./components/SingleView";
+
 const App = () => {
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(initializeAnecdotes());
   }, [dispatch]);
@@ -18,12 +22,15 @@ const App = () => {
   const { notification } = useSelector(selectNotification);
   return (
     <div>
+      <Navbar />
       {notification && <Notification notification={notification} />}
-      <Filter />
-      <h2>Anecdotes</h2>
-      <Anecdotes />
-      <h2>create new</h2>
-      <Form />
+      <Routes>
+        <Route path="/" element={<Anecdotes />} />
+        <Route path="/anecdotes/:id" element={<SingleView />} />
+        <Route path="/create" element={<Form />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+      <footer>some footer here</footer>
     </div>
   );
 };
