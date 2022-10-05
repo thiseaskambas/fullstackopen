@@ -16,6 +16,7 @@ const getAll = () => {
   const config = {
     headers: { authorization: token },
   };
+
   const request = axios.get(baseUrl, config);
   return request.then((response) => response.data);
 };
@@ -32,7 +33,19 @@ const like = async (blogId, likes) => {
   const config = {
     headers: { authorization: token },
   };
-  const res = await axios.put(`${baseUrl}/${blogId}`, { likes: likes }, config);
+  const res = await axios.put(`${baseUrl}/${blogId}`, { likes }, config);
+  return res.data;
+};
+
+const comment = async (blogId, content) => {
+  const config = {
+    headers: { authorization: token },
+  };
+  const res = await axios.put(
+    `${baseUrl}/${blogId}/comments`,
+    { content },
+    config
+  );
   return res.data;
 };
 
@@ -43,4 +56,13 @@ const deleteBlog = async (blogId) => {
   await axios.delete(`${baseUrl}/${blogId}`, config);
 };
 
-export default { getAll, logIn, setToken, createBlog, like, deleteBlog };
+export default {
+  getAll,
+  logIn,
+  setToken,
+  createBlog,
+  like,
+  deleteBlog,
+  token,
+  comment,
+};

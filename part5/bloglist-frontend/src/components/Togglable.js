@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const Togglable = (props) => {
   const [visible, setVisible] = useState(false);
-  const displayWhenVisible = { display: visible ? "" : "none" };
-  const displayWhenHidden = { display: visible ? "none" : true };
+  const displayWhenVisible = { display: visible ? '' : 'none' };
+  const displayWhenHidden = { display: visible ? 'none' : true };
   return (
     <>
       <div id={props.id} style={displayWhenHidden}>
