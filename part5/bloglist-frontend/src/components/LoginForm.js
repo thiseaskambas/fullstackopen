@@ -1,20 +1,32 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { logUserIn } from '../reducers/userSlice';
+import { notify } from '../reducers/notificationSlice';
 
-const LoginForm = ({ handleLogin }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+const LoginForm = () => {
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleLogin({ username, password });
-    setPassword("");
-    setUsername("");
+    await dispatch(logUserIn({ username, password }))
+      .unwrap()
+      .then(() => {
+        dispatch(notify({ content: 'Logged in!', type: 'success' }, 5));
+      })
+      .catch((err) => {
+        dispatch(notify({ content: 'Wrong credentials!', type: 'error' }, 5));
+        console.log({ err });
+      });
+    setPassword('');
+    setUsername('');
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        username:{" "}
+        username:{' '}
         <input
           id="username"
           value={username}
@@ -22,7 +34,7 @@ const LoginForm = ({ handleLogin }) => {
         />
       </div>
       <div>
-        password:{" "}
+        password:{' '}
         <input
           id="password"
           type="password"

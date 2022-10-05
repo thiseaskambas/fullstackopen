@@ -19,6 +19,7 @@ export const createAnecdote = createAsyncThunk(
 
 export const saveVote = createAsyncThunk("anecdotes/vote", async (anecdote) => {
   const response = await anecdotes.voteAnecdote(anecdote);
+  console.log({ response });
   return response;
 });
 
