@@ -1,14 +1,16 @@
-import { useState } from "react";
-import blogServices from "../services/blogs";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { likeBlog } from '../reducers/blogsSlice';
 
 const Blog = ({ blog, user, handleDelete }) => {
+  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
-  const label = visible ? "hide" : "show";
+  const label = visible ? 'hide' : 'show';
+
   const handleLike = async () => {
     try {
-      const tempLikes = likes + 1;
-      await blogServices.like(blog.id, tempLikes);
+      await dispatch(likeBlog(blog));
       setLikes(likes + 1);
     } catch (err) {
       console.log(err);

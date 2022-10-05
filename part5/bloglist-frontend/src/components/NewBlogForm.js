@@ -1,27 +1,30 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { saveBlog } from '../reducers/blogsSlice';
 
-const NewBlogForm = ({ saveBlog }) => {
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogUrl, setBlogUrl] = useState("");
-  const [blogAuthor, setBlogAuthor] = useState("");
+const NewBlogForm = () => {
+  const dispatch = useDispatch();
+  const [blogTitle, setBlogTitle] = useState('');
+  const [blogUrl, setBlogUrl] = useState('');
+  const [blogAuthor, setBlogAuthor] = useState('');
 
-  const handleAddBlog = (e) => {
+  const handleAddBlog = async (e) => {
     e.preventDefault();
     const newBlog = {
       title: blogTitle,
       url: blogUrl,
       author: blogAuthor,
     };
-    saveBlog(newBlog);
-    setBlogTitle("");
-    setBlogUrl("");
-    setBlogAuthor("");
+    dispatch(saveBlog(newBlog));
+    setBlogTitle('');
+    setBlogUrl('');
+    setBlogAuthor('');
   };
 
   return (
     <form onSubmit={handleAddBlog}>
       <div>
-        title :{" "}
+        title :{' '}
         <input
           id="blog-title"
           value={blogTitle}
@@ -29,7 +32,7 @@ const NewBlogForm = ({ saveBlog }) => {
         />
       </div>
       <div>
-        URL :{" "}
+        URL :{' '}
         <input
           id="blog-url"
           value={blogUrl}
@@ -37,7 +40,7 @@ const NewBlogForm = ({ saveBlog }) => {
         />
       </div>
       <div>
-        Author :{" "}
+        Author :{' '}
         <input
           id="blog-author"
           value={blogAuthor}
