@@ -16,13 +16,14 @@ const Header = () => {
       <nav>
         <Link to="/">Home</Link>
         <Link to="/users">Users</Link>
+        {user && (
+          <>
+            <span>{user.name.toUpperCase()} is logged in</span>
+            <button onClick={handleLogout}>logout</button>
+          </>
+        )}
       </nav>
-      {user && (
-        <>
-          <h3>{user.name.toUpperCase()} is logged in</h3>
-          <button onClick={handleLogout}>logout</button>
-        </>
-      )}
+
       <Outlet />
     </>
   );

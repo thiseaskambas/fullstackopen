@@ -35,6 +35,14 @@ export const likeBlog = createAsyncThunk('blogs/likeBlog', async (blog) => {
   return { ...blog, likes: blog.likes + 1 };
 });
 
+export const commentBlog = createAsyncThunk('blogs/comment', async (obj) => {
+  const { blog, content } = obj;
+  console.log({ blog });
+  const updatedBlog = await blogServices.comment(blog.id, content);
+  console.log(updatedBlog);
+  return updatedBlog;
+});
+
 const blogSlice = createSlice({
   name: 'blogs',
   initialState,
@@ -57,6 +65,11 @@ const blogSlice = createSlice({
         return { ...state, blogs };
       })
       .addCase(likeBlog.fulfilled, (state, action) => {
+        const { id } = action.payload;
+        const blogs = state.blogs.filter((blog) => blog.id !== id);
+        return { ...state, blogs: [...blogs, action.payload] };
+      })
+      .addCase(commentBlog.fulfilled, (state, action) => {
         const { id } = action.payload;
         const blogs = state.blogs.filter((blog) => blog.id !== id);
         return { ...state, blogs: [...blogs, action.payload] };

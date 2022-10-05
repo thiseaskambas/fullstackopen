@@ -5,13 +5,11 @@ import Notification from '../components/Notification';
 import LoginForm from '../components/LoginForm';
 import NewBlogForm from '../components/NewBlogForm';
 import Togglable from '../components/Togglable';
-
 import { initializeUsers, getUsersStatus } from '../reducers/usersSlice';
 import {
   initializeBlogs,
   selectAllBlogs,
   getBlogsStatus,
-  deleteBlog,
 } from '../reducers/blogsSlice';
 import {
   findUserFromToken,
@@ -49,16 +47,6 @@ const Home = () => {
     }
   }, [userStatus]);
 
-  const handleDelete = async (blog) => {
-    if (window.confirm(`Are you sure you want to delete ${blog.title}?`)) {
-      try {
-        dispatch(deleteBlog(blog));
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
-
   return (
     <div>
       {notification.content && <Notification notification={notification} />}
@@ -74,14 +62,7 @@ const Home = () => {
         blogs
           .slice()
           .sort((a, b) => b.likes - a.likes)
-          .map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              user={user}
-              handleDelete={handleDelete}
-            />
-          ))}
+          .map((blog) => <Blog key={blog.id} blog={blog} user={user} />)}
 
       {user && (
         <Togglable label="Add new blog" id="new-blog-btn">
