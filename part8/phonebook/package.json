@@ -4,13 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start" : "nodemon index.js"
+    "start": "nodemon index.js"
   },
   "author": "thiseas",
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^3.10.2",
-    "graphql": "^16.6.0",
     "nodemon": "^2.0.20"
   }
 }
