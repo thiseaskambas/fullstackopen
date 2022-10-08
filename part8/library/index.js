@@ -92,7 +92,15 @@ const resolvers = {
       }
       return await Book.find(query).populate("author");
     },
-    allAuthors: async (root, args) => await Author.find({}),
+    allAuthors: async (root, args) => {
+      try {
+        const res = await Author.find({});
+        console.log(res);
+        return res;
+      } catch (err) {
+        console.log(err);
+      }
+    },
     me: (root, args, context) => context.currentUser,
   },
   Author: {
@@ -108,7 +116,11 @@ const resolvers = {
       }
       const { title, author, published, genres } = args;
       try {
-        const authorObj = await Author.findOne({ name: author });
+        let authorObj = await Author.findOne({ name: author });
+        if (!authorObj) {
+          const newAuthor = new Author({ name: author });
+          authorObj = await newAuthor.save();
+        }
         const newBook = new Book({
           title,
           published,

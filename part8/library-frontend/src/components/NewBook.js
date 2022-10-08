@@ -23,7 +23,12 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault();
     addBook({
-      variables: { title, author, published: +published, genres },
+      variables: {
+        title,
+        author,
+        genres,
+        published: published.length > 0 ? +published : null,
+      },
     });
     setTitle("");
     setPublished("");
