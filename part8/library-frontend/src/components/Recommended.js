@@ -1,9 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { ALL_BOOKS } from "../queries";
+import { ALL_BOOKS, LOGGED_USER } from "../queries";
 
 const Recommended = (props) => {
+  const user = useQuery(LOGGED_USER);
+
   const result = useQuery(ALL_BOOKS, {
-    variables: { genre: "prefered" },
+    skip: !user.data?.me.favouriteGenre,
+    variables: { genre: user.data?.me.favouriteGenre },
   });
   if (!props.show) {
     return null;

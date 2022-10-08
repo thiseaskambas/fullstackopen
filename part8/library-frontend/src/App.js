@@ -10,7 +10,7 @@ const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
   const client = useApolloClient();
-  console.log({ client });
+
   const logout = () => {
     setToken(null);
     localStorage.clear();
@@ -33,7 +33,7 @@ const App = () => {
       <Authors show={page === "authors"} />
       <Books show={page === "books"} />
       <NewBook show={page === "add"} />
-      <Recommended show={page === "recommended"} />
+      {token && <Recommended show={page === "recommended"} />}
       <LogIn show={page === "login"} setToken={setToken} setPage={setPage} />
     </div>
   );
