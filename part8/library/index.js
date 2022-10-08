@@ -95,7 +95,6 @@ const resolvers = {
     allAuthors: async (root, args) => {
       try {
         const res = await Author.find({});
-        console.log(res);
         return res;
       } catch (err) {
         console.log(err);
@@ -138,7 +137,11 @@ const resolvers = {
       if (!currentUser) {
         throw new AuthenticationError("not authenticated");
       }
-      Author.findOneAndUpdate({ name: args.name }, { born: args.setBornTo });
+      return await Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        { new: true }
+      );
     },
     createUser: async (root, args) => {
       try {

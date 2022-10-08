@@ -3,7 +3,7 @@ import { ALL_BOOKS } from "../queries";
 
 const Recommended = (props) => {
   const result = useQuery(ALL_BOOKS, {
-    variables: { genre: "mystery" },
+    variables: { genre: "prefered" },
   });
   if (!props.show) {
     return null;
@@ -16,7 +16,7 @@ const Recommended = (props) => {
 
   return (
     <div>
-      <h2>books</h2>
+      <h2>Recommended books</h2>
 
       <table>
         <tbody>

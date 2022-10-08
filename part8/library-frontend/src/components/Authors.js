@@ -4,7 +4,6 @@ import Select from "react-select";
 import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries";
 
 const Authors = (props) => {
-  const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
   const result = useQuery(ALL_AUTHORS);
@@ -26,8 +25,8 @@ const Authors = (props) => {
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
-    editAuthor({ variables: { name, setBornTo: +date } });
-    setName("");
+    editAuthor({ variables: { name: selectedOption.value, setBornTo: +date } });
+
     setDate("");
   };
 
@@ -63,6 +62,7 @@ const Authors = (props) => {
         <div>
           birthyear{" "}
           <input
+            required
             type="number"
             onChange={(e) => {
               setDate(e.target.value);

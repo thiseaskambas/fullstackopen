@@ -4,7 +4,8 @@ import { ALL_BOOKS } from "../queries";
 
 const Books = (props) => {
   const [selectedGenre, setSelectedGenre] = useState(null);
-  const result = useQuery(ALL_BOOKS);
+  const allBooksConst = useQuery(ALL_BOOKS);
+  const result = useQuery(ALL_BOOKS, { variables: { genre: selectedGenre } });
   if (!props.show) {
     return null;
   }
@@ -15,17 +16,13 @@ const Books = (props) => {
   const books = result.data.allBooks;
 
   const genres = [];
-  books.forEach((book) => {
+  allBooksConst.data.allBooks.forEach((book) => {
     book.genres.forEach((genre) => {
       if (!genres.includes(genre)) {
         genres.push(genre);
       }
     });
   });
-
-  const booksToShow = selectedGenre
-    ? books.filter((book) => book.genres.includes(selectedGenre))
-    : books;
 
   return (
     <div>
@@ -38,7 +35,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {booksToShow.map((book) => (
+          {books.map((book) => (
             <tr key={book.title}>
               <td>{book.title}</td>
               <td>{book.author.name}</td>
