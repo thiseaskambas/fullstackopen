@@ -14,6 +14,10 @@ const typeDefs = gql`
     id: ID!
   }
 
+  type Subscription {
+    personAdded: Person!
+  }
+
   type User {
     username: String!
     friends: [Person!]!

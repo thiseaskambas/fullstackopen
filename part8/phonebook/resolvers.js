@@ -1,3 +1,5 @@
+const { PubSub } = require("graphql-subscriptions");
+const pubsub = new PubSub();
 const { UserInputError, AuthenticationError } = require("apollo-server");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -75,7 +77,7 @@ const resolvers = {
           invalidArgs: args,
         });
       }
-
+      pubsub.publish("PERSON_ADDED", { personAdded: person });
       return person;
     },
     addAsFriend: async (root, args, { currentUser }) => {
@@ -110,6 +112,11 @@ const resolvers = {
       }
 
       return person;
+    },
+  },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator("PERSON_ADDED"),
     },
   },
 };
