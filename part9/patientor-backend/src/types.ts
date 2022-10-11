@@ -1,4 +1,10 @@
-export type Gender = 'male' | 'female';
+//NOTE: TypeScript enum allows us to use the actual values in our code at runtime, not only in the compilation phase.
+
+export enum Gender {
+  Female = 'female',
+  Male = 'male',
+  Other = 'other',
+}
 
 export interface PatientEntry {
   id: string;
@@ -16,3 +22,5 @@ export interface DiagnosisEnty {
   name: string;
   latin?: string;
 }
+
+export type NewPatientEntry = Omit<PatientEntry, 'id'>;
