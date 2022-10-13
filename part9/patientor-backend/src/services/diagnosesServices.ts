@@ -5,4 +5,8 @@ const getDiagnoses = (): Array<DiagnosisEnty> => {
   return diagnoses;
 };
 
-export default { getDiagnoses };
+const getDiagnoseByCode = (code: string): DiagnosisEnty | undefined => {
+  return diagnoses.find((el) => el.code === code);
+};
+
+export default { getDiagnoses, getDiagnoseByCode };
