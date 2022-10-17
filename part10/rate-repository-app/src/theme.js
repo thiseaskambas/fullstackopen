@@ -14,6 +14,8 @@ const theme = {
     barItem: 24,
   },
   fonts: {
+    android: 'Roboto-Regular',
+    ios: 'ARIAL',
     main: 'System',
   },
   fontWeights: {
