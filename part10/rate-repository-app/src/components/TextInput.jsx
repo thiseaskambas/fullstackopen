@@ -6,10 +6,15 @@ const styles = StyleSheet.create({
     borderColor: '#767676',
     borderWidth: 1,
   },
+  error: {
+    borderColor: 'red',
+    borderRadius: 3,
+    borderWidth: 1,
+  },
 });
 
 const TextInput = ({ style, error, ...props }) => {
-  const textInputStyle = [style, styles.input];
+  const textInputStyle = [style, error ? styles.error : styles.input];
 
   return <NativeTextInput style={textInputStyle} {...props} />;
 };
