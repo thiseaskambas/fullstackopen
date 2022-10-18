@@ -30,7 +30,8 @@ const styles = StyleSheet.create({
   },
   description: {
     color: '#505050',
-    margin: 5,
+    flex: 1,
+    flexWrap: 'wrap',
   },
   stats: {
     display: 'flex',
@@ -44,7 +45,14 @@ const styles = StyleSheet.create({
   topCtn: {
     display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
+    justifyContent: 'space-between',
+    // borderColor: 'red',
+    // borderWidth: 1,
+  },
+  descriptionCtn: {
+    display: 'flex',
+    flexDirection: 'row',
   },
 });
 
@@ -58,16 +66,21 @@ const RepositoryItem = ({
   rating,
   img,
 }) => {
-  console.log(img);
   return (
     <View style={styles.flexContainer}>
       <View style={styles.topCtn}>
         <Image source={{ uri: img }} style={styles.img} />
-        <View>
-          <Text fontSize="subheading" fontWeight="bold" style={{ padding: 5 }}>
+        <View
+          style={{
+            flexGrow: 1,
+          }}
+        >
+          <Text fontSize="subheading" fontWeight="bold">
             {fullName}
           </Text>
-          <Text style={styles.description}>{description}</Text>
+          <View style={styles.descriptionCtn}>
+            <Text style={styles.description}>{description}</Text>
+          </View>
           <View style={styles.btnCtn}>
             <Text style={styles.btn}>{language}</Text>
           </View>
