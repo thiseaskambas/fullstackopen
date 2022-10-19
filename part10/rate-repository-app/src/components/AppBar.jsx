@@ -36,7 +36,6 @@ const AppBar = () => {
   const apolloClient = useApolloClient();
   const authContext = useAuthStorage();
   const { loading, data } = useQuery(GET_LOGGED_USER);
-  console.log({ data });
 
   const logOutHandler = (e) => {
     e.preventDefault();
