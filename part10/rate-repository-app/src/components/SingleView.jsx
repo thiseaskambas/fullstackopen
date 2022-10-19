@@ -137,7 +137,7 @@ const SingleView = () => {
         </View>
       </View>
       <View style={styles.cta}>
-        <Pressable>
+        <Pressable onPress={() => Linking.openURL(url)}>
           <Text style={styles.btnCta}>Open in GitHub</Text>
         </Pressable>
       </View>
