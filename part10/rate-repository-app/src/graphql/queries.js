@@ -41,6 +41,20 @@ export const GET_SINGLE_REPO = gql`
       ratingAverage
       language
       reviewCount
+      reviews {
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+            user {
+              id
+              username
+            }
+          }
+        }
+      }
     }
   }
 `;

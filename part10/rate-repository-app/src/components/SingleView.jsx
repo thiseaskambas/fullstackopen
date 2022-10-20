@@ -1,74 +1,97 @@
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-native';
 import { GET_SINGLE_REPO } from '../graphql/queries';
-import { StyleSheet, Image, View, Pressable } from 'react-native';
-import * as Linking from 'expo-linking';
+import { StyleSheet, View, FlatList } from 'react-native';
 import Text from './Text';
+
+import RepositoryInfo from './RepositoryInfo';
 import theme from '../theme';
 
+const ItemSeparator = () => <View style={styles.separator} />;
+
 const styles = StyleSheet.create({
-  flexContainer: {
-    padding: 5,
+  separator: {
+    height: 10,
+  },
+  reviewCtn: {
+    display: 'flex',
+    flexDirection: 'row',
+    // borderColor: 'green',
+    // borderWidth: 2,
     backgroundColor: 'white',
-    // display: 'flex',
-    //  alignItems: 'center',
+    padding: 10,
   },
-  statsCtn: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    margin: 5,
-  },
-  btn: {
-    backgroundColor: theme.backgroundColors.btn,
-    color: theme.colors.btnItem,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 2,
+  rating: {
+    borderColor: theme.backgroundColors.btn,
+    borderWidth: 2,
+    height: 45,
+    width: 45,
+    borderRadius: 50,
     textAlign: 'center',
-  },
-  btnCtn: {
-    alignSelf: 'flex-start',
-    marginVertical: 5,
-  },
-  cta: {
-    margin: 5,
-  },
-  btnCta: {
-    backgroundColor: theme.backgroundColors.btn,
-    color: theme.colors.btnItem,
-    borderRadius: 5,
+    lineHeight: 45,
+    color: theme.backgroundColors.btn,
+    fontSize: 18,
     fontWeight: 'bold',
-    paddingVertical: 5,
-    textAlign: 'center',
   },
-  description: {
-    color: '#505050',
-    flex: 1,
-    flexWrap: 'wrap',
+  ratingCtn: {
+    // borderColor: 'orange',
+    // borderWidth: 2,
+    marginRight: 10,
   },
-  stats: {
-    display: 'flex',
-  },
-  img: {
-    width: 50,
-    height: 50,
-    borderRadius: 5,
-    margin: 5,
-  },
-  topCtn: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-    justifyContent: 'space-between',
+  ctnChild: {
     // borderColor: 'red',
+    // borderWidth: 2,
+    flexGrow: 1,
+  },
+  textCtn: {
+    flexDirection: 'row',
+  },
+  text: {
+    flex: 1,
+    // borderColor: 'blue',
     // borderWidth: 1,
   },
-  descriptionCtn: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
 });
+
+const renderItem = ({ item }) => {
+  const date = new Date(item.createdAt);
+  const newDate =
+    date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+  return (
+    <View style={styles.reviewCtn}>
+      <View style={styles.ratingCtn}>
+        <Text style={styles.rating}>{item.rating}</Text>
+      </View>
+      <View style={styles.ctnChild}>
+        <View>
+          <Text fontWeight="bold">{item.user.username}</Text>
+        </View>
+        <View>
+          <Text>{newDate}</Text>
+        </View>
+        <View style={styles.textCtn}>
+          <Text style={styles.text}>{item.text}</Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const ReviewListContainer = ({ repository }) => {
+  const reviewNodes = repository.reviews
+    ? repository.reviews.edges.map((edge) => edge.node)
+    : [];
+  return (
+    <FlatList
+      data={reviewNodes}
+      ItemSeparatorComponent={ItemSeparator}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+      ListHeaderComponent={() => <RepositoryInfo repository={repository} />}
+      ListHeaderComponentStyle={{ marginBottom: 10 }}
+    />
+  );
+};
 
 const SingleView = () => {
   const { id } = useParams();
@@ -77,72 +100,9 @@ const SingleView = () => {
   });
   if (loading || error) return null;
 
-  const {
-    fullName,
-    description,
-    language,
-    stargazersCount,
-    forksCount,
-    reviewCount,
-    ratingAverage,
-    ownerAvatarUrl,
-    url,
-  } = data.repository;
+  const { repository } = data;
 
-  return (
-    <View style={styles.flexContainer}>
-      <View style={styles.topCtn}>
-        <Image source={{ uri: ownerAvatarUrl }} style={styles.img} />
-        <View
-          style={{
-            flexGrow: 1,
-            marginLeft: 10,
-          }}
-        >
-          <Text fontSize="subheading" fontWeight="bold">
-            {fullName}
-          </Text>
-          <View style={styles.descriptionCtn}>
-            <Text style={styles.description}>{description}</Text>
-          </View>
-          <View style={styles.btnCtn}>
-            <Text style={styles.btn}>{language}</Text>
-          </View>
-        </View>
-      </View>
-      <View style={styles.statsCtn}>
-        <View style={styles.stats}>
-          <Text fontWeight="bold">
-            {stargazersCount < 1000
-              ? stargazersCount
-              : `${(stargazersCount / 1000).toFixed(1)}k`}
-          </Text>
-          <Text>Stars</Text>
-        </View>
-        <View style={styles.stats}>
-          <Text fontWeight="bold">
-            {forksCount < 1000
-              ? forksCount
-              : `${(forksCount / 1000).toFixed(1)}k`}
-          </Text>
-          <Text>Forks</Text>
-        </View>
-        <View style={styles.stats}>
-          <Text fontWeight="bold">{reviewCount} </Text>
-          <Text>Reviews</Text>
-        </View>
-        <View style={styles.stats}>
-          <Text fontWeight="bold">{ratingAverage} </Text>
-          <Text>Rating</Text>
-        </View>
-      </View>
-      <View style={styles.cta}>
-        <Pressable onPress={() => Linking.openURL(url)}>
-          <Text style={styles.btnCta}>Open in GitHub</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
+  return <ReviewListContainer repository={repository} />;
 };
 
 export default SingleView;
