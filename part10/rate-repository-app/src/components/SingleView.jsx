@@ -78,6 +78,7 @@ const renderItem = ({ item }) => {
 };
 
 const ReviewListContainer = ({ repository }) => {
+  console.log(repository);
   const reviewNodes = repository.reviews
     ? repository.reviews.edges.map((edge) => edge.node)
     : [];
@@ -97,6 +98,7 @@ const SingleView = () => {
   const { id } = useParams();
   const { loading, error, data } = useQuery(GET_SINGLE_REPO, {
     variables: { id },
+    fetchPolicy: 'cache-and-network',
   });
   if (loading || error) return null;
 

@@ -25,11 +25,7 @@ const styles = StyleSheet.create({
 });
 
 const AppBarTab = ({ children }) => {
-  return (
-    <View style={{ paddingHorizontal: 5, borderColor: 'blue', borderWidth: 1 }}>
-      {children}
-    </View>
-  );
+  return <View style={{ paddingHorizontal: 5 }}>{children}</View>;
 };
 
 const AppBar = () => {
@@ -60,11 +56,18 @@ const AppBar = () => {
           </AppBarTab>
         )}
         {!loading && data?.me !== null && (
-          <AppBarTab>
-            <Pressable onPress={logOutHandler}>
-              <Text style={styles.link}>Sign-out</Text>
-            </Pressable>
-          </AppBarTab>
+          <>
+            <AppBarTab>
+              <Link to="/review">
+                <Text style={styles.link}>Create a review</Text>
+              </Link>
+            </AppBarTab>
+            <AppBarTab>
+              <Pressable onPress={logOutHandler}>
+                <Text style={styles.link}>Sign-out</Text>
+              </Pressable>
+            </AppBarTab>
+          </>
         )}
       </ScrollView>
     </View>
