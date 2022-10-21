@@ -48,7 +48,7 @@ const Text = ({
   }
 
   const font = Platform.OS === 'android' ? 'Roboto' : 'Arial';
-  console.log({ font });
+
   const textStyle = [
     styles.text,
     color === 'textSecondary' && styles.colorTextSecondary,

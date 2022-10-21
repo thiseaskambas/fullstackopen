@@ -28,11 +28,14 @@ const FormikTextInput = ({ name, ...props }) => {
     <View style={styles.inputCtn}>
       <TextInput
         style={styles.input}
+        keyboardType={name === 'rating' ? 'numeric' : 'default'}
         onChangeText={(value) => helpers.setValue(value)}
         onBlur={() => helpers.setTouched(true)}
         value={field.value}
         error={showError}
         secureTextEntry={name === 'password'}
+        multiline={name === 'review'}
+        numberOfLines={name === 'review' ? 3 : null}
         {...props}
       />
       {showError && <Text style={styles.errorText}>{meta.error}</Text>}
