@@ -1,7 +1,8 @@
 import { View } from 'react-native';
 import Text from './Text';
 import React from 'react';
-import { StyleSheet, Image, Pressable } from 'react-native';
+
+import { StyleSheet, Image } from 'react-native';
 import theme from '../theme';
 
 const styles = StyleSheet.create({
@@ -26,12 +27,9 @@ const styles = StyleSheet.create({
   },
   btnCtn: {
     alignSelf: 'flex-start',
-    margin: 5,
+    marginVertical: 5,
   },
-  description: {
-    color: '#505050',
-    margin: 5,
-  },
+
   stats: {
     display: 'flex',
   },
@@ -44,7 +42,18 @@ const styles = StyleSheet.create({
   topCtn: {
     display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
+    justifyContent: 'space-between',
+    // borderColor: 'red',
+    // borderWidth: 1,
+  },
+  descriptionCtn: {
+    // display: 'flex',
+    flexDirection: 'row',
+  },
+  description: {
+    color: '#505050',
+    flex: 1,
   },
 });
 
@@ -58,22 +67,27 @@ const RepositoryItem = ({
   rating,
   img,
 }) => {
-  console.log(img);
   return (
     <View style={styles.flexContainer}>
       <View style={styles.topCtn}>
         <Image source={{ uri: img }} style={styles.img} />
-        <View>
-          <Text fontSize="subheading" fontWeight="bold" style={{ padding: 5 }}>
+        <View
+          style={{
+            flexGrow: 1,
+            marginLeft: 10,
+          }}
+        >
+          <Text fontSize="subheading" fontWeight="bold">
             {fullName}
           </Text>
-          <Text style={styles.description}>{description}</Text>
+          <View style={styles.descriptionCtn}>
+            <Text style={styles.description}>{description}</Text>
+          </View>
           <View style={styles.btnCtn}>
             <Text style={styles.btn}>{language}</Text>
           </View>
         </View>
       </View>
-
       <View style={styles.statsCtn}>
         <View style={styles.stats}>
           <Text fontWeight="bold">

@@ -11,7 +11,7 @@ const theme = {
   fontSizes: {
     body: 14,
     subheading: 16,
-    barItem: 24,
+    barItem: 20,
   },
   fonts: {
     android: 'Roboto-Regular',

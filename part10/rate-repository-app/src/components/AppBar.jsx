@@ -1,8 +1,11 @@
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { Link } from 'react-router-native';
 import Constants from 'expo-constants';
 import Text from './Text';
 import theme from '../theme';
+import { useApolloClient, useQuery } from '@apollo/client';
+import { GET_LOGGED_USER } from '../graphql/queries';
+import useAuthStorage from '../hooks/useAuthStorage';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,14 +25,21 @@ const styles = StyleSheet.create({
 });
 
 const AppBarTab = ({ children }) => {
-  return (
-    <View style={{ paddingHorizontal: 5, borderColor: 'blue', borderWidth: 1 }}>
-      {children}
-    </View>
-  );
+  return <View style={{ paddingHorizontal: 5 }}>{children}</View>;
 };
 
 const AppBar = () => {
+  const apolloClient = useApolloClient();
+  const authContext = useAuthStorage();
+  const { loading, data } = useQuery(GET_LOGGED_USER);
+
+  const logOutHandler = (e) => {
+    e.preventDefault();
+    authContext.removeAccessToken();
+    console.log('logging out');
+    apolloClient.resetStore();
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
@@ -38,11 +48,27 @@ const AppBar = () => {
             <Text style={styles.link}>Repositories</Text>
           </Link>
         </AppBarTab>
-        <AppBarTab>
-          <Link to="/sign-in">
-            <Text style={styles.link}>Sign-in</Text>
-          </Link>
-        </AppBarTab>
+        {!loading && data?.me === null && (
+          <AppBarTab>
+            <Link to="/sign-in">
+              <Text style={styles.link}>Sign-in</Text>
+            </Link>
+          </AppBarTab>
+        )}
+        {!loading && data?.me !== null && (
+          <>
+            <AppBarTab>
+              <Link to="/review">
+                <Text style={styles.link}>Create a review</Text>
+              </Link>
+            </AppBarTab>
+            <AppBarTab>
+              <Pressable onPress={logOutHandler}>
+                <Text style={styles.link}>Sign-out</Text>
+              </Pressable>
+            </AppBarTab>
+          </>
+        )}
       </ScrollView>
     </View>
   );

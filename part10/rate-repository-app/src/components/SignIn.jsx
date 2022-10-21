@@ -3,8 +3,10 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import Text from './Text';
 import { Formik } from 'formik';
 
+import useSignIn from '../hooks/useSignIn';
 import FormikTextInput from './FormikTextInput';
 import theme from '../theme';
+import { useNavigate } from 'react-router-native';
 
 const styles = StyleSheet.create({
   formContainer: {
@@ -30,21 +32,19 @@ const initialValues = {
 };
 
 const validationSchema = yup.object().shape({
-  email: yup.string().email().required('please enter your email'),
-  password: yup
-    .string()
-    .required('Please enter yout password')
-    .min(8, 'Password must be 8 characters long')
+  email: yup.string() /* .email().required('please enter your email') */,
+  password: yup.string().required('Please enter yout password'),
+  /*   .min(8, 'Password must be 8 characters long')
     .matches(/[0-9]/, 'Password requires a number')
     .matches(/[a-z]/, 'Password requires a lowercase letter')
     .matches(/[A-Z]/, 'Password requires an uppercase letter')
-    .matches(/[^\w]/, 'Password requires a symbol'),
+    .matches(/[^\w]/, 'Password requires a symbol'), */
 });
 
 const SingInForm = ({ onSubmit }) => {
   return (
     <View style={styles.formContainer}>
-      <FormikTextInput name="email" placeholder="email" />
+      <FormikTextInput name="username" placeholder="username" />
       <FormikTextInput name="password" placeholder="password" />
       <Pressable onPress={onSubmit} style={styles.btn}>
         <Text style={styles.btnText}>Log-in</Text>
@@ -54,8 +54,17 @@ const SingInForm = ({ onSubmit }) => {
 };
 
 const SignIn = () => {
-  const onSubmit = (values) => {
-    console.log(values);
+  const navigate = useNavigate();
+  const [signIn] = useSignIn();
+  const onSubmit = async (values) => {
+    const { username, password } = values;
+    try {
+      const { data } = await signIn({ username, password });
+      console.log(data);
+      navigate('/');
+    } catch (e) {
+      console.log(e);
+    }
   };
   return (
     <Formik
